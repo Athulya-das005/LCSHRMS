@@ -84,11 +84,18 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Swagger
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "LCSHRMS API v1");
+    c.RoutePrefix = "swagger"; // keeps /swagger
+});
 
 // ❌ TEMPORARILY DISABLE HTTPS (IMPORTANT)
 // app.UseHttpsRedirection();
