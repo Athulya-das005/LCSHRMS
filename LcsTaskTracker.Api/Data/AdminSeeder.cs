@@ -1,4 +1,5 @@
-﻿using LcsTaskTracker.Api.Models;
+﻿
+using LcsTaskTracker.Api.Models;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -8,19 +9,40 @@ namespace LcsTaskTracker.Api.Data
     {
         public static void SeedAdmin(AppDbContext context)
         {
-            if (context.Users.Any(x => x.Username == "tl_admin"))
+            // 🔹 Admin
+            if (!context.Users.Any(x => x.Username == "tl_admin"))
+            {
+                context.Users.Add(new User
+                {
+                    Username = "tl_admin",
+                    PasswordHash = HashPassword("Admin@123"),
+                    Role = "Admin",
+                    IsActive = true
+                });
+            }
+
+            // 🔹 Employees
+            SeedEmployee(context, "sidha");
+            SeedEmployee(context, "athulya");
+            SeedEmployee(context, "angad");
+            SeedEmployee(context, "ayush");
+            SeedEmployee(context, "ali");
+
+            context.SaveChanges();
+        }
+
+        private static void SeedEmployee(AppDbContext context, string username)
+        {
+            if (context.Users.Any(x => x.Username == username))
                 return;
 
-            var admin = new User
+            context.Users.Add(new User
             {
-                Username = "tl_admin",
-                PasswordHash = HashPassword("Admin@123"),
-                Role = "Admin",
+                Username = username,
+                PasswordHash = HashPassword("User@123"),
+                Role = "Employee",
                 IsActive = true
-            };
-
-            context.Users.Add(admin);
-            context.SaveChanges();
+            });
         }
 
         private static string HashPassword(string password)
